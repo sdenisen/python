@@ -51,7 +51,7 @@ def is_endless_loop(result_array):
     loop_value = check_number_in_loop(new_number)
     if loop_value != -1:
         return loop_value
-    if new_number in result_array or len(result_array)>=10000:
+    if new_number in result_array:
         result_array.append(new_number)
         set_loop(result_array)
         return new_number
