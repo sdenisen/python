@@ -25,6 +25,7 @@ IN = "IN"
 UNKNOWN = "UNKNOWN"
 SOLVED = "SOLVED"
 
+
 class SudokuSolver:
     def __init__(self, file_name):
         self.sudoku_list = []
@@ -38,6 +39,7 @@ class SudokuSolver:
                     self.sudoku_list.append(Sudoku(int_sudoku))
                 int_sudoku = []
 
+
 class Sudoku:
     def __init__(self, int_input_array):
         self.suggest = [1,2,3,4,5,6,7,8,9]
@@ -49,12 +51,63 @@ class Sudoku:
                 else:
                     self.solved[i][j] = [0, UNKNOWN, self.suggest]
 
+    def solve(self):
+        changed = 1
+        steps = 0
+        while changed:
+            changed = self.updateSuggests()
+            steps += 1
+            if steps > 81:
+                break
+
+    def updateSuggests(self, i, j):
+        changed = 0
+        buff = self.arrayDiff(self.solved[i][j], self.rowContent(i))
+        buff = self.arrayDiff(buff, self.colContent(j))
+        buff = self.arrayDiff(buff, self.sectContent(i, j))
+
+        for i in range(9):
+            for j in range(9):
+                if UNKNOWN !=  self.solved[i][j][1]:
+                    continue
+                changed += self.solveSingle(i, j)
+
+                # TODO: hidden single
+
+        return changed
+
+    def rowContent(self, i):
+        result = []
+        for j in range(9):
+            if UNKNOWN != self.solved[i][j][1]:
+                result.append(self.solved[i][j][0])
+        return result
+
+    def colContent(self, j):
+        result = []
+        for i in range(9):
+            if UNKNOWN != self.solved[i][j][1]:
+                result.append(self.solved[i][j][0])
+        return result
+
+    def sectContent(self, i, j):
+        pass
+
+    def arrayDiff(self, param, param1):
+        pass
+
+
+
+
+
     def draw(self):
         for i in range(9):
             print self.solved[i]
+
 
 file_path="p096_sudoku.txt"
 s = SudokuSolver(file_path)
 
 s.sudoku_list[0]
 s.sudoku_list[0].draw()
+print s.sudoku_list[0].solved[1][3][2]
