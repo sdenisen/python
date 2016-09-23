@@ -22,6 +22,14 @@ class Test(unittest.TestCase):
             int_sudoku.append([int(i) for i in list(line.strip())])
         self.s = Sudoku(int_sudoku)
 
+    def testSolveMethod(self):
+        print "before"
+        self.s.draw_sudoku()
+        self.s.solve()
+        print "after"
+        self.s.draw_sudoku()
+
+
     def testColContent(self):
         result = self.s.colContent(0)
         self.assertListEqual(result, [9, 7, 8], "wrong expected list.")
@@ -31,9 +39,32 @@ class Test(unittest.TestCase):
         self.assertListEqual(result, [3, 2, 6], "wrong expected list.")
 
     def testSectContent(self):
-        result = self.s.sectContent(0, 3)
-        self.assertListEqual(result, [], "wrong expected list.")
+        result = self.s.sectContent(2, 2)
+        self.assertListEqual(result, [3,9,1], "wrong expected list.")
 
+        result = self.s.sectContent(2, 5)
+        self.assertListEqual(result, [2, 3, 5, 8, 6], "wrong expected list.")
+
+        result = self.s.sectContent(2, 8)
+        self.assertListEqual(result, [6, 1, 4], "wrong expected list.")
+
+        result = self.s.sectContent(5, 2)
+        self.assertListEqual(result, [8, 7, 6], "wrong expected list, actual:%s" % result )
+
+        result = self.s.sectContent(5, 5)
+        self.assertListEqual(result, [1, 2, 7, 8], "wrong expected list, actual:%s" % result )
+
+        result = self.s.sectContent(5, 8)
+        self.assertListEqual(result, [9, 8, 2], "wrong expected list, actual:%s" % result )
+
+        result = self.s.sectContent(8, 2)
+        self.assertListEqual(result, [2, 8, 5], "wrong expected list, actual:%s" % result )
+
+        result = self.s.sectContent(8, 5)
+        self.assertListEqual(result, [6, 9, 2, 3, 1], "wrong expected list, actual:%s" % result )
+
+        result = self.s.sectContent(8, 8)
+        self.assertListEqual(result, [5, 9, 3], "wrong expected list, actual:%s" % result )
 
 if __name__ == "__main__":
     unittest.main()

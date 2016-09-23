@@ -52,29 +52,31 @@ class Sudoku:
                     self.solved[i][j] = [0, UNKNOWN, self.suggest]
 
     def solve(self):
-        changed = 1
-        steps = 0
-        while changed:
-            changed = self.updateSuggests()
-            steps += 1
-            if steps > 81:
+        while True:
+            is_updated = False
+            for i in range(9):
+                for j in range(9):
+                    if UNKNOWN !=  self.solved[i][j][1]:
+                        continue
+                    is_updated = is_updated or self.updateSuggests(i, j)
+
+            if is_updated == False:
                 break
 
+
+    def markSolved(self, i, j, solve_value):
+        self.solved[i][j][0] = solve_value
+        self.solved[i][j][1] = SOLVED
+
     def updateSuggests(self, i, j):
-        changed = 0
-        buff = self.arrayDiff(self.solved[i][j], self.rowContent(i))
-        buff = self.arrayDiff(buff, self.colContent(j))
-        buff = self.arrayDiff(buff, self.sectContent(i, j))
+        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.rowContent(i)))
+        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.colContent(j)))
+        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.sectContent(i, j)))
+        if len(self.solved[i][j][2]) == 1:
+            self.markSolved(i, j, self.solved[i][j][2][0])
+            return True
+        return False
 
-        for i in range(9):
-            for j in range(9):
-                if UNKNOWN !=  self.solved[i][j][1]:
-                    continue
-                changed += self.solveSingle(i, j)
-
-                # TODO: hidden single
-
-        return changed
 
     def rowContent(self, i):
         result = []
@@ -91,13 +93,40 @@ class Sudoku:
         return result
 
     def sectContent(self, i, j):
-        pass
+        result = []
+        i_corner = 0
+        j_corner = 0
+
+        if 0 < i <=2:
+            i_corner = 0
+        elif 2 < i <=5:
+            i_corner = 3
+        elif 5 < i <=8:
+            i_corner = 6
+
+        if 0 < j <=2:
+            j_corner = 0
+        elif 2 < j <=5:
+            j_corner = 3
+        elif 5 < j <=8:
+            j_corner = 6
+
+        for i in range(i_corner, i_corner+3):
+            for j in range(j_corner, j_corner+3):
+                if UNKNOWN != self.solved[i][j][1]:
+                    result.append(self.solved[i][j][0])
+        return result
 
     def arrayDiff(self, param, param1):
         pass
 
 
 
+    def draw_sudoku(self):
+        for i in range(9):
+            for j in range(9):
+                print "|" + str(self.solved[i][j][0]),
+            print ""
 
 
     def draw(self):
