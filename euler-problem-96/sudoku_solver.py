@@ -39,6 +39,18 @@ class SudokuSolver:
                     self.sudoku_list.append(Sudoku(int_sudoku))
                 int_sudoku = []
 
+    def start(self):
+        not_solved = []
+        i = 0
+        for sudoku in self.sudoku_list:
+            sudoku.solve()
+            if not sudoku.is_solved:
+                not_solved.append(sudoku)
+            i += 1
+
+        print "count: %s" % i
+        print "not solved: %s" % len(not_solved)
+
 
 class Sudoku:
     def __init__(self, int_input_array):
@@ -51,18 +63,65 @@ class Sudoku:
                 else:
                     self.solved[i][j] = [0, UNKNOWN, self.suggest]
 
+    @property
+    def is_solved(self):
+        pass
+
+    @is_solved.getter
+    def is_solved(self):
+        for i in range(9):
+            for j in range(9):
+                if self.solved[i][j][1] == UNKNOWN:
+                    return False
+        return True
+
     def solve(self):
+        # singleton.
+        self.loner()
+
+        if self.is_solved:
+            return
+
+        # hidden singleton.
+        self.hiddenLoner()
+
+    def hiddenLoner(self):
+        # try to find single loner in row
+        for i in range(9):
+            hidden_value = [1,2,3,4,5,6,7,8,9]
+            row = self.solved[i]
+            cell_index = 0
+            for cell in row:
+
+                # find unique value in cell.
+                if cell[1] == IN or cell[1] == SOLVED:
+                    hidden_value.remove(cell[0])
+
+                suggest_value = cell[2]
+                # neeed to check whether some of the values meet to other cells in row.
+                for cell_2 in row:
+                    for v in cell_2[2]:
+                        if v in suggest_value:
+                            suggest_value.remove(v)
+
+                if len(suggest_value) == 1:
+                    # we found hidden loner
+                    self.solved[i][cell_index][0] = suggest_value[0]
+                    self.solved[i][cell_index][1] = SOLVED
+                cell_index += 1
+
+
+    def loner(self):
         while True:
             is_updated = False
             for i in range(9):
                 for j in range(9):
-                    if UNKNOWN !=  self.solved[i][j][1]:
+                    if UNKNOWN != self.solved[i][j][1]:
                         continue
                     is_updated = is_updated or self.updateSuggests(i, j)
 
-            if is_updated == False:
+            if not is_updated:
                 break
-
 
     def markSolved(self, i, j, solve_value):
         self.solved[i][j][0] = solve_value
@@ -76,7 +135,6 @@ class Sudoku:
             self.markSolved(i, j, self.solved[i][j][2][0])
             return True
         return False
-
 
     def rowContent(self, i):
         result = []
@@ -136,7 +194,4 @@ class Sudoku:
 
 file_path="p096_sudoku.txt"
 s = SudokuSolver(file_path)
-
-s.sudoku_list[0]
-s.sudoku_list[0].draw()
-print s.sudoku_list[0].solved[1][3][2]
+s.start()
