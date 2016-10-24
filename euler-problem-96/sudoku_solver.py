@@ -50,6 +50,6 @@ class SudokuSolver:
         print "not solved: %s" % len(not_solved)
 
 
-file_path = "p096_sudoku.txt"
-s = SudokuSolver(file_path)
-s.start()
+#file_path = "p096_sudoku.txt"
+#s = SudokuSolver(file_path)
+#s.start()

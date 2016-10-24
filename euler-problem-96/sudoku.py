@@ -1,9 +1,6 @@
 __author__ = 'Sergey'
 
-
-IN = "IN"
-UNKNOWN = "UNKNOWN"
-SOLVED = "SOLVED"
+from CellData import CellData
 
 
 class Sudoku:
@@ -13,26 +10,21 @@ class Sudoku:
         for i in range(9):
             for j in range(9):
                 if int_input_array[i][j]:
-                    self.solved[i][j] = [int_input_array[i][j], IN, []]
+                    self.solved[i][j] = CellData(int_input_array[i][j], CellData.IN)
                 else:
-                    self.solved[i][j] = [0, UNKNOWN, self.suggest]
+                    self.solved[i][j] = CellData()
 
     @property
     def is_solved(self):
-        pass
-
-    @is_solved.getter
-    def is_solved(self):
         for i in range(9):
             for j in range(9):
-                if self.solved[i][j][1] == UNKNOWN:
+                if self.solved[i][j].state == CellData.UNKNOWN:
                     return False
         return True
 
     def solve(self):
         # singleton.
         self.loner()
-
         if self.is_solved:
             return
 
@@ -47,20 +39,20 @@ class Sudoku:
             cell_index = 0
             for cell in row:
                 # find unique value in cell.
-                if cell[1] == IN or cell[1] == SOLVED:
-                    hidden_value.remove(cell[0])
+                if cell.state == CellData.IN or cell.state == CellData.SOLVED:
+                    hidden_value.remove(cell.value)
 
-                suggest_value = cell[2]
+                suggest_value = cell.suggests
                 # neeed to check whether some of the values meet to other cells in row.
                 for cell_2 in row:
-                    for v in cell_2[2]:
+                    for v in cell_2.suggests:
                         if v in suggest_value:
                             suggest_value.remove(v)
 
                 if len(suggest_value) == 1:
                     # we found hidden loner
-                    self.solved[i][cell_index][0] = suggest_value[0]
-                    self.solved[i][cell_index][1] = SOLVED
+                    self.solved[i][cell_index].value = suggest_value[0]
+                    self.solved[i][cell_index].state = CellData.SOLVED
                 cell_index += 1
 
 
@@ -69,7 +61,7 @@ class Sudoku:
             is_updated = False
             for i in range(9):
                 for j in range(9):
-                    if UNKNOWN != self.solved[i][j][1]:
+                    if CellData.UNKNOWN != self.solved[i][j].state:
                         continue
                     is_updated = is_updated or self.updateSuggests(i, j)
 
@@ -77,30 +69,32 @@ class Sudoku:
                 break
 
     def markSolved(self, i, j, solve_value):
-        self.solved[i][j][0] = solve_value
-        self.solved[i][j][1] = SOLVED
+        self.solved[i][j].value = solve_value
+        self.solved[i][j].state = CellData.SOLVED
 
     def updateSuggests(self, i, j):
-        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.rowContent(i)))
-        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.colContent(j)))
-        self.solved[i][j][2] = list(set(self.solved[i][j][2]) - set(self.sectContent(i, j)))
-        if len(self.solved[i][j][2]) == 1:
-            self.markSolved(i, j, self.solved[i][j][2][0])
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.rowContent(i)))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.colContent(j)))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.sectContent(i, j)))
+        if len(self.solved[i][j].suggests) == 1:
+            self.markSolved(i, j, self.solved[i][j].suggests[0])
             return True
+
         return False
 
     def rowContent(self, i):
         result = []
         for j in range(9):
-            if UNKNOWN != self.solved[i][j][1]:
-                result.append(self.solved[i][j][0])
+            if CellData.UNKNOWN != self.solved[i][j].state:
+                result.append(self.solved[i][j].value)
         return result
 
     def colContent(self, j):
         result = []
         for i in range(9):
-            if UNKNOWN != self.solved[i][j][1]:
-                result.append(self.solved[i][j][0])
+            if CellData.UNKNOWN != self.solved[i][j].state:
+                result.append(self.solved[i][j].value)
+
         return result
 
     def sectContent(self, i, j):
@@ -124,8 +118,8 @@ class Sudoku:
 
         for i in range(i_corner, i_corner+3):
             for j in range(j_corner, j_corner+3):
-                if UNKNOWN != self.solved[i][j][1]:
-                    result.append(self.solved[i][j][0])
+                if CellData.UNKNOWN != self.solved[i][j].state:
+                    result.append(self.solved[i][j].value)
         return result
 
     def arrayDiff(self, param, param1):
@@ -135,11 +129,10 @@ class Sudoku:
     def draw_sudoku(self):
         for i in range(9):
             for j in range(9):
-                print "|" + str(self.solved[i][j][0]),
+                print "|" + str(self.solved[i][j].value),
             print ""
 
 
     def draw(self):
         for i in range(9):
             print self.solved[i]
-
