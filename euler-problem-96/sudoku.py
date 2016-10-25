@@ -28,12 +28,12 @@ class Sudoku:
             return
 
         # hidden singleton.
-        self.hiddenLoner()
+        self.hidden_loner()
 
-    def hiddenLoner(self):
+    def hidden_loner(self):
         # try to find single loner in row
         for i in range(9):
-            hidden_value = [1,2,3,4,5,6,7,8,9]
+            hidden_value = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             row = self.solved[i]
             cell_index = 0
             for cell in row:
@@ -54,7 +54,6 @@ class Sudoku:
                     self.solved[i][cell_index].state = CellData.SOLVED
                 cell_index += 1
 
-
     def loner(self):
         while True:
             is_updated = False
@@ -62,25 +61,25 @@ class Sudoku:
                 for j in range(9):
                     if self.solved[i][j].is_solved:
                         continue
-                    is_updated = is_updated or self.updateSuggests(i, j)
+                    is_updated = is_updated or self.update_suggests(i, j)
 
             if not is_updated:
                 break
 
-    def updateSuggests(self, i, j):
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.rowContent(i)))
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.colContent(j)))
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.sectContent(i, j)))
+    def update_suggests(self, i, j):
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.row_content(i)))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.col_content(j)))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.sect_content(i, j)))
         return self.solved[i][j].mark_solved()
 
-    def rowContent(self, i):
+    def row_content(self, i):
         result = []
         for j in range(9):
             if self.solved[i][j].is_solved:
                 result.append(self.solved[i][j].value)
         return result
 
-    def colContent(self, j):
+    def col_content(self, j):
         result = []
         for i in range(9):
             if self.solved[i][j].is_solved:
@@ -88,7 +87,7 @@ class Sudoku:
 
         return result
 
-    def sectContent(self, i, j):
+    def sect_content(self, i, j):
         result = []
         i_corner = 0
         j_corner = 0
@@ -113,16 +112,11 @@ class Sudoku:
                     result.append(self.solved[i][j].value)
         return result
 
-    def arrayDiff(self, param, param1):
-        pass
-
-
     def draw_sudoku(self):
         for i in range(9):
             for j in range(9):
                 print "|" + str(self.solved[i][j].value),
             print ""
-
 
     def draw(self):
         for i in range(9):
