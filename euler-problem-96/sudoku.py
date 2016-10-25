@@ -92,18 +92,18 @@ class Sudoku:
         i_corner = 0
         j_corner = 0
 
-        if 0 < i <=2:
+        if 0 < i <= 2:
             i_corner = 0
-        elif 2 < i <=5:
+        elif 2 < i <= 5:
             i_corner = 3
-        elif 5 < i <=8:
+        elif 5 < i <= 8:
             i_corner = 6
 
-        if 0 < j <=2:
+        if 0 < j <= 2:
             j_corner = 0
-        elif 2 < j <=5:
+        elif 2 < j <= 5:
             j_corner = 3
-        elif 5 < j <=8:
+        elif 5 < j <= 8:
             j_corner = 6
 
         for i in range(i_corner, i_corner+3):
