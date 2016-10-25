@@ -8,10 +8,7 @@ class Sudoku:
         self.solved = [[0 for i in range(0, 9)] for i in range(0, 9)]
         for i in range(9):
             for j in range(9):
-                if int_input_array[i][j]:
-                    self.solved[i][j] = CellData(int_input_array[i][j], CellData.IN)
-                else:
-                    self.solved[i][j] = CellData()
+                self.solved[i][j] = CellData(int_input_array[i][j])
 
     @property
     def is_solved(self):
@@ -62,7 +59,6 @@ class Sudoku:
                     if self.solved[i][j].is_solved:
                         continue
                     is_updated = is_updated or self.update_suggests(i, j)
-
             if not is_updated:
                 break
 

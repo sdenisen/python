@@ -1,15 +1,17 @@
+import unittest
+
 __author__ = 'Sergey'
 
 
-class CellData:
+class CellData(object):
     IN = "IN"
     UNKNOWN = "UNKNOWN"
     SOLVED = "SOLVED"
 
-    def __init__(self, value=None, state=None, suggests=None):
+    def __init__(self, value=None):
         self._value = value if value else 0
-        self._state = state if state else self.UNKNOWN
-        self._suggests = suggests if suggests else [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        self._state = self.UNKNOWN if self._value == 0 else self.IN
+        self._suggests = [1, 2, 3, 4, 5, 6, 7, 8, 9] if self._state  == self.UNKNOWN else []
 
     @property
     def value(self):
@@ -46,3 +48,36 @@ class CellData:
             return True
 
         return False
+
+
+class Test(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def testEmptyConstructor(self):
+        c = CellData()
+        self.assertEqual(c.state, CellData.UNKNOWN, "wrong state attribute")
+        self.assertEqual(c.value, 0, "wrong default value")
+        self.assertListEqual(c.suggests, [1, 2, 3, 4, 5, 6, 7, 8, 9], "wrong suggested value array")
+
+        c = CellData(10)
+        self.assertEqual(c.state, CellData.IN, "wrong state attribute")
+        self.assertEqual(c.value, 10, "wrong default value")
+        self.assertListEqual(c.suggests, [], "wrong suggested value array")
+        self.assertTrue(c.is_solved, "incorrect return value")
+
+    def testMarkSolvedOneElement(self):
+        c = CellData(0)
+        c.suggests = [4]
+        self.assertFalse(c.is_solved, "incorrect return value")
+        self.assertTrue(c.mark_solved(), "incorrect return value")
+        self.assertTrue(c.is_solved, "incorrect return value")
+        self.assertEqual(c.state, CellData.SOLVED, "incorrect value")
+
+    def testMarkSolvedSeveralElements(self):
+        c = CellData(0)
+        c.suggests = [4, 5]
+        self.assertFalse(c.mark_solved(), "incorrect return value")
+        self.assertEqual(c.state, CellData.UNKNOWN, "incorrect value")
+        self.assertFalse(c.is_solved, "incorrect return value")
