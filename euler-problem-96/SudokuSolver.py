@@ -1,4 +1,4 @@
-from sudoku import Sudoku
+from Sudoku import Sudoku
 import re
 
 __author__ = 'sdenisenko'
