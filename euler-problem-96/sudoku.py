@@ -4,6 +4,7 @@ from CellData import CellData
 __author__ = 'Sergey'
 
 
+
 class Sudoku(object):
     def __init__(self, int_input_array):
         self.solved = [[0 for i in range(0, 9)] for i in range(0, 9)]
