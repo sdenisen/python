@@ -1,3 +1,4 @@
+import copy
 from CellData import CellData
 
 __author__ = 'Sergey'
@@ -27,29 +28,59 @@ class Sudoku(object):
         # hidden singleton.
         self.hidden_loner()
 
-    def hidden_loner(self):
-        # try to find single loner in row
+    def hidden_longer(self):
+        # row.
         for i in range(9):
-            hidden_value = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-            row = self.solved[i]
-            cell_index = 0
-            for cell in row:
-                # find unique value in cell.
-                if cell.state == CellData.IN or cell.state == CellData.SOLVED:
-                    hidden_value.remove(cell.value)
+            result = self.find_hidden_longer(self.get_row_cells(i))
+            if result is None:
+                continue
+            for (value, place) in result:
+                # r (value, <cell place>)
+                self.solved[i][place].value = value
+                self.solved[i][place].sugests = [value, ]
+                self.solved[i][place].mark_solved()
 
-                suggest_value = cell.suggests
-                # neeed to check whether some of the values meet to other cells in row.
-                for cell_2 in row:
-                    for v in cell_2.suggests:
-                        if v in suggest_value:
-                            suggest_value.remove(v)
+        # col
+        for j in range(9):
+            result = self.find_hidden_longer(self.get_col_cells(j))
+            if result is None:
+                continue
+            for (value, place) in result:
+                # r (value, <cell place>)
+                self.solved[place][j].value = value
+                self.solved[place][j].sugests = [value, ]
+                self.solved[place][j].mark_solved()
 
-                if len(suggest_value) == 1:
-                    # we found hidden loner
-                    self.solved[i][cell_index].value = suggest_value[0]
-                    self.solved[i][cell_index].state = CellData.SOLVED
-                cell_index += 1
+        # sect
+        # TODO: need to find best way to mark cells as resolved with hidden longer value.
+        for i in range(9):
+            for j in range(9):
+                result = self.find_hidden_longer(self.get_sect_cells(i, j))
+                print result
+
+    def find_hidden_longer(self, cells):
+        _cells = copy.deepcopy(cells)
+        expected_hidden_value = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        remaining_list = list(set(expected_hidden_value) - set([cell.value for cell in _cells if cell.is_solved]))
+        suggested_lists = [cell.suggests for cell in _cells if not cell.is_solved]
+
+        for remain_digit in remaining_list:
+            digits_count = len([1 for l in suggested_lists if remain_digit in l])
+            # need to remove from suggested_lists not  satisfying digit
+            if digits_count > 1:
+                [s_list.remove(remain_digit) for s_list in suggested_lists if remain_digit in s_list]
+
+        found_hidden_longer_list = [s[0] for s in suggested_lists if len(s) == 1]
+        # We DIDN'T fIND hidden longer in given cells.
+        if len([1 for s in suggested_lists if len(s) == 1]) == 0:
+            return None
+
+        result = []
+        for hidden_longer in found_hidden_longer_list:
+            for i in range(9):
+                if hidden_longer in cells[i].suggests:
+                    result.append((hidden_longer, i))
+        return result
 
     def loner(self):
         while True:
@@ -63,28 +94,26 @@ class Sudoku(object):
                 break
 
     def update_suggests(self, i, j):
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.row_content(i)))
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.col_content(j)))
-        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set(self.sect_content(i, j)))
+
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set([cell.value for cell in self.get_row_cells(i) if cell.is_solved]))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set([cell.value for cell in self.get_col_cells(j) if cell.is_solved]))
+        self.solved[i][j].suggests = list(set(self.solved[i][j].suggests) - set([cell.value for cell in self.get_sect_cells(i, j) if cell.is_solved]))
         return self.solved[i][j].mark_solved()
 
-    def row_content(self, i):
-        result = []
+    def get_row_cells(self, i):
+        cell_list = []
         for j in range(9):
-            if self.solved[i][j].is_solved:
-                result.append(self.solved[i][j].value)
-        return result
+            cell_list.append(self.solved[i][j])
+        return cell_list
 
-    def col_content(self, j):
-        result = []
+    def get_col_cells(self, j):
+        cell_list = []
         for i in range(9):
-            if self.solved[i][j].is_solved:
-                result.append(self.solved[i][j].value)
+            cell_list.append(self.solved[i][j])
+        return cell_list
 
-        return result
-
-    def sect_content(self, i, j):
-        result = []
+    def get_sect_cells(self, i, j):
+        sect_list = []
         i_corner = 0
         j_corner = 0
 
@@ -104,9 +133,8 @@ class Sudoku(object):
 
         for i in range(i_corner, i_corner+3):
             for j in range(j_corner, j_corner+3):
-                if self.solved[i][j].is_solved:
-                    result.append(self.solved[i][j].value)
-        return result
+                    sect_list.append(self.solved[i][j])
+        return sect_list
 
     def draw_sudoku(self):
         for i in range(9):
