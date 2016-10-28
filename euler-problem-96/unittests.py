@@ -1,4 +1,4 @@
-from sudoku import Sudoku
+from Sudoku import Sudoku
 import unittest
 from CellData import CellData
 
