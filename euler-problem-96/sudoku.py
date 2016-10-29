@@ -20,14 +20,20 @@ class Sudoku(object):
         return True
 
     def solve(self):
-        # singleton.
         for i in range(20):
             self.loner()
             if self.is_solved:
                 return
 
-            # hidden singleton.
             self.hidden_loner()
+            if self.is_solved:
+                return
+
+            self.open_pairs()
+            if self.is_solved:
+                return
+
+            self.hold_candidat()
             if self.is_solved:
                 return
 
