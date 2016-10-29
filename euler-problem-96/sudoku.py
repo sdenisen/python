@@ -1,4 +1,3 @@
-
 import copy
 from CellData import CellData
 
@@ -31,6 +30,14 @@ class Sudoku(object):
             self.hidden_loner()
             if self.is_solved:
                 return
+
+    def hold_candidat(self):
+        # TODO: need to implement
+        pass
+
+    def open_pairs(self):
+        # TODO: need to implement
+        pass
 
     def hidden_loner(self):
         # row.
@@ -73,8 +80,6 @@ class Sudoku(object):
 
             if not is_updated:
                 break
-
-
 
     def get_cell_position_in_sect(self, i_delta, j_delta, cell_place):
         """
@@ -191,6 +196,15 @@ class Sudoku(object):
         for i in range(9):
             for j in range(9):
                 print "|" + str(self.solved[i][j].value),
+            print ""
+
+    def draw_suggested_values(self):
+        for i in range(9):
+            for j in range(9):
+                if self.solved[i][j].is_solved:
+                    print "|" + str(self.solved[i][j].value) + "\t",
+                else:
+                    print "|" + "(" + str(self.solved[i][j].suggests) +")",
             print ""
 
     def draw(self):

@@ -46,7 +46,14 @@ class SudokuSolver:
                 not_solved.append(sudoku)
                 print "------------------"
                 sudoku.draw_sudoku()
+                print "------------------"
+                sudoku.draw_suggested_values()
+
+            if len(not_solved) == 2:
+                break
+
             i += 1
+
 
         print "count: %s" % i
         print "not solved: %s" % len(not_solved)
