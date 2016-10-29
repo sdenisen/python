@@ -1,4 +1,4 @@
-from Sudoku import Sudoku
+from sudoku import Sudoku
 import unittest
 from CellData import CellData
 
@@ -41,9 +41,18 @@ class Test(unittest.TestCase):
 
     def testGetColCells(self):
         print "-------------"
-        for i in range(9):
-            for j in range(9):
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
                 result = self.s.get_sect_cells(i, j)
                 for cell in result:
                     print cell.value,
                 print ""
+
+    def testGetCellPositionInSect(self):
+        print "-------------"
+        print "testGetCellPositionInSect"
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                for cell_place in range(9):
+                    print "i, j, cell_place --> result: %s, %s, %s, %s" % (i, j, cell_place, self.s.get_cell_position_in_sect(i, j, cell_place))
+        print "-------------"

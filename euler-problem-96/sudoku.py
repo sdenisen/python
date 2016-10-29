@@ -1,8 +1,8 @@
+
 import copy
 from CellData import CellData
 
 __author__ = 'Sergey'
-
 
 
 class Sudoku(object):
@@ -22,48 +22,98 @@ class Sudoku(object):
 
     def solve(self):
         # singleton.
-        self.loner()
-        if self.is_solved:
-            return
+        for i in range(20):
+            self.loner()
+            if self.is_solved:
+                return
 
-        # hidden singleton.
-        self.hidden_loner()
+            # hidden singleton.
+            self.hidden_loner()
+            if self.is_solved:
+                return
 
-    def hidden_longer(self):
+    def hidden_loner(self):
         # row.
-        for i in range(9):
-            result = self.find_hidden_longer(self.get_row_cells(i))
-            if result is None:
-                continue
-            for (value, place) in result:
-                # r (value, <cell place>)
-                self.solved[i][place].value = value
-                self.solved[i][place].sugests = [value, ]
-                self.solved[i][place].mark_solved()
+        while True:
+            is_updated = False
+            for i in range(9):
+                result = self.find_hidden_longer(self.get_row_cells(i))
+                if result is None:
+                    continue
+                for (value, place) in result:
+                    # r (value, <cell place>)
+                    self.solved[i][place].suggests = [value, ]
+                    self.solved[i][place].mark_solved()
+                is_updated = True
 
-        # col
-        for j in range(9):
-            result = self.find_hidden_longer(self.get_col_cells(j))
-            if result is None:
-                continue
-            for (value, place) in result:
-                # r (value, <cell place>)
-                self.solved[place][j].value = value
-                self.solved[place][j].sugests = [value, ]
-                self.solved[place][j].mark_solved()
-
-        # sect
-        # TODO: need to find best way to mark cells as resolved with hidden longer value.
-        for i in range(9):
+            # col
             for j in range(9):
-                result = self.find_hidden_longer(self.get_sect_cells(i, j))
-                print result
+                result = self.find_hidden_longer(self.get_col_cells(j))
+                if result is None:
+                    continue
+                for (value, place) in result:
+                    # r (value, <cell place>)
+                    self.solved[place][j].suggests = [value, ]
+                    self.solved[place][j].mark_solved()
+                is_updated = True
+
+            # sect
+            for i in range(0, 9, 3):
+                for j in range(0, 9, 3):
+                    result = self.find_hidden_longer(self.get_sect_cells(i, j))
+                    # mark hidden longer
+                    if result is None:
+                        continue
+                    for (value, place) in result:
+                        # r (value, <cell place>)
+                        (x, y) = self.get_cell_position_in_sect(i, j, place)
+                        self.solved[x][y].suggests = [value, ]
+                        self.solved[x][y].mark_solved()
+                    is_updated = True
+
+            if not is_updated:
+                break
+
+
+
+    def get_cell_position_in_sect(self, i_delta, j_delta, cell_place):
+        """
+        cell_place:             0,1,2
+        0,1,2,3,4,5,6,7,8  -->> 3,4,5 -->>
+                                6,7,8
+        :param i_delta:
+        :param j_delta:
+        :param cell_place:
+        :return:
+        """
+        i_result = 0
+        j_result = 0
+        if 0 <= cell_place < 3:
+            # i = 0, j = [0,1,2]
+            i_result = 0 + i_delta
+            j_result = cell_place + j_delta
+        elif 3 <= cell_place < 6:
+            # i=1, j = [0,1,2]
+            i_result = 1 + i_delta
+            j_result = cell_place + j_delta - 3
+        elif 6 <= cell_place <=8:
+            # i=2 j = [0,1,2]
+            i_result = 2 + i_delta
+            j_result = cell_place + j_delta - 6
+
+        return (i_result, j_result)
 
     def find_hidden_longer(self, cells):
         _cells = copy.deepcopy(cells)
         expected_hidden_value = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         remaining_list = list(set(expected_hidden_value) - set([cell.value for cell in _cells if cell.is_solved]))
         suggested_lists = [cell.suggests for cell in _cells if not cell.is_solved]
+        # remove from suggested lists already found.
+        solved_cells_value = [cell.value for cell in cells if cell.is_solved]
+        for s_list in suggested_lists:
+            for value in solved_cells_value:
+                if value in s_list:
+                    s_list.remove(value)
 
         for remain_digit in remaining_list:
             digits_count = len([1 for l in suggested_lists if remain_digit in l])

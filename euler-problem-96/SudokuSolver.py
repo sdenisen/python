@@ -1,4 +1,4 @@
-from Sudoku import Sudoku
+from sudoku import Sudoku
 import re
 
 __author__ = 'sdenisenko'
@@ -44,12 +44,14 @@ class SudokuSolver:
             sudoku.solve()
             if not sudoku.is_solved:
                 not_solved.append(sudoku)
+                print "------------------"
+                sudoku.draw_sudoku()
             i += 1
 
         print "count: %s" % i
         print "not solved: %s" % len(not_solved)
 
 
-#file_path = "p096_sudoku.txt"
-#s = SudokuSolver(file_path)
-#s.start()
+file_path = "p096_sudoku.txt"
+s = SudokuSolver(file_path)
+s.start()
