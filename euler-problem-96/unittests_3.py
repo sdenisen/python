@@ -36,6 +36,17 @@ class Test(unittest.TestCase):
         self.s.draw_sudoku()
 
 
+    def testUseOpenPairMethod(self):
+        self.s.draw_sudoku()
+        print ""
+        self.s.open_pairs()
+        self.s.draw_sudoku()
+        print ""
+        self.s.hidden_loner()
+        self.s.draw_sudoku()
+        print ""
+        self.s.loner()
+        self.s.draw_sudoku()
 
 
 

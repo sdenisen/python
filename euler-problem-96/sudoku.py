@@ -42,8 +42,63 @@ class Sudoku(object):
         pass
 
     def open_pairs(self):
-        # TODO: need to implement
-        pass
+        # row
+        for i in range(9):
+            pair, positions = self.find_open_pairs(self.get_row_cells(i))
+            if pair is None:
+                continue
+            for j in range(9):
+                if j in positions:
+                    continue
+                for s in pair:
+                    if s in self.solved[i][j].suggests:
+                        self.solved[i][j].suggests.remove(s)
+
+        #col
+        for j in range(9):
+            pair, positions = self.find_open_pairs(self.get_col_cells(j))
+            if pair is None:
+                continue
+            for i in range(9):
+                if i in positions:
+                    continue
+                for s in pair:
+                    if s in self.solved[i][j].suggests:
+                        self.solved[i][j].suggests.remove(s)
+
+        #sect
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                pair, positions = self.find_open_pairs(self.get_sect_cells(i, j))
+                if pair is None:
+                    continue
+                for place in range(9):
+                    if place in positions:
+                        continue
+                    (x, y) = self.get_cell_position_in_sect(i, j, place)
+                    for s in pair:
+                        if s in self.solved[x][y].suggests:
+                            self.solved[x][y].suggests.remove(s)
+
+    def find_open_pairs(self, cells):
+
+        expected_pair = [cell for cell in cells if len(cell.suggests) == 2]
+        pair = []
+        for i in range(len(expected_pair)):
+            for j in range(i, len(expected_pair)- i):
+                result_length = len(set(expected_pair[i].suggests) - set(expected_pair[j].suggests))
+                if result_length == 0:
+                    pair = expected_pair[i].suggests
+
+        if not pair:
+            return None, None
+        positions = []
+        for i in range(9):
+            if len(set(pair) - set(cells[i].suggests)) == 0 and len(cells[i].suggests) == 2:
+                positions.append(i)
+
+        return (pair, positions) if len(positions) == 2 else (None, None)
+
 
     def hidden_loner(self):
         # row.

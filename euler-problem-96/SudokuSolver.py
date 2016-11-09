@@ -49,9 +49,6 @@ class SudokuSolver:
                 print "------------------"
                 sudoku.draw_suggested_values()
 
-            if len(not_solved) == 2:
-                break
-
             i += 1
 
 
