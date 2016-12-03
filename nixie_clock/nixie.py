@@ -1,9 +1,26 @@
 import unittest
+from RPi import GPIO
 
 __author__ = 'Sergey'
 
 
-def convertToBinaryArray(digit):
+class NixieTube(object):
+    TUBE_TYPE_SECONDS = "TUBE_TYPE_SECONDS"
+    TUBE_TYPE_HOURS_MINUTES = "TUBE_TYPE_HOURS_MINUTES"
+
+    def __init__(self, tube_type, channels_digits):
+        self.tube_type = tube_type
+        self.channels_digits = channels_digits
+
+    def show(self, d_digit):
+        digit_to_show = d_digit
+        if self.tube_type == self.TUBE_TYPE_HOURS_MINUTES:
+            convert_digit = {0:2, 1:1, 2:0, 3:9, 4:8, 5:7, 6:6, 7:5, 8:4, 9:3}
+            digit_to_show = convert_digit[d_digit]
+        b_array = self._convertToBinaryArray(digit_to_show)
+        GPIO.output(self.channels_digits, b_array)
+
+    def _convertToBinaryArray(self, digit):
         """
             The method converts digit to binary array of digits  GPIO.LOW/GPIO.HIGH
             param digit: params 0...9
@@ -26,8 +43,9 @@ class Tests (unittest.TestCase):
                          [0, 0, 1, 0], [0, 0, 1, 1], [0, 1, 0, 0],
                          [0, 1, 0, 1], [0, 1, 1, 0], [0, 1, 1, 1],
                          [1, 0, 0, 0], [1, 0, 0, 1]]
+        nt = NixieTube(None, None)
         for i in range(9):
-            self.assertListEqual(expected_dict[i], convertToBinaryArray(i), msg_str%str(i))
+            self.assertListEqual(expected_dict[i], nt._convertToBinaryArray(i), msg_str%str(i))
 
 
 if __name__ == "__main__":
