@@ -39,6 +39,7 @@ class Sudoku(object):
 
     def hold_candidat(self):
         # TODO: need to implement
+
         pass
 
     def open_pairs(self):
@@ -98,7 +99,6 @@ class Sudoku(object):
                 positions.append(i)
 
         return (pair, positions) if len(positions) == 2 else (None, None)
-
 
     def hidden_loner(self):
         # row.
@@ -260,12 +260,31 @@ class Sudoku(object):
             print ""
 
     def draw_suggested_values(self):
+        cells_str_result = [["" for i in range(9)] for i in range(9)]
         for i in range(9):
             for j in range(9):
-                if self.solved[i][j].is_solved:
-                    print "|" + str(self.solved[i][j].value) + "\t",
-                else:
-                    print "|" + "(" + str(self.solved[i][j].suggests) +")",
+                solve_or_suggest = str(self.solved[i][j].value) if self.solved[i][j].is_solved else str(self.solved[i][j].suggests)
+                cells_str_result[i][j] = solve_or_suggest
+
+        coll_width = []
+        for j in range(9):
+            max_coll_width = 1
+            for i in range(9):
+                max_coll_width = len(cells_str_result[i][j]) if len(cells_str_result[i][j]) > max_coll_width else max_coll_width
+            coll_width.append(max_coll_width)
+
+        for i in range(9):
+            if not i%3:
+                for j in range(9):
+                    if not j%3:
+                        print "|",
+                    print "|" + "-" * coll_width[j],
+                print ""
+            for j in range(9):
+                if not j%3:
+                    print "|",
+                cells_str_result[i][j] += " " * (coll_width[j] - len(cells_str_result[i][j]))
+                print "|"+cells_str_result[i][j],
             print ""
 
     def draw(self):
