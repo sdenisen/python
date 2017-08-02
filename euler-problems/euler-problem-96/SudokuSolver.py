@@ -1,5 +1,7 @@
-from sudoku import Sudoku
 import re
+
+from sudoku import Sudoku
+
 
 __author__ = 'sdenisenko'
 '''

@@ -1,6 +1,7 @@
-from sudoku import Sudoku
 import unittest
-from CellData import CellData
+
+from sudoku import Sudoku
+
 
 __author__ = 'Sergey'
 

@@ -61,7 +61,7 @@ def parseInputData():
     count = 0
     count_triangles = 0
     triangles = []
-    with open("input_data\\p102_triangles.txt", "r") as f:
+    with open("../input_data/p102_triangles.txt", "r") as f:
         for line in f:
             coordinates = line.split(",")
             point_1 = Point(coordinates[0], coordinates[1])
