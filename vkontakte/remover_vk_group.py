@@ -1,6 +1,3 @@
-from flask.json import jsonify
-import json
-
 __author__ = 'sdeni'
 import vk_api
 
