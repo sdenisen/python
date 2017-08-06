@@ -1,7 +1,8 @@
+from WSController import Motor
+
 __author__ = 'sdeni'
 
-from HomeExplorerEngine.Motor import Motor
-from HomeExplorerEngine.common_consts import *
+from WSController.common_consts import *
 
 
 class EngineController(object):
