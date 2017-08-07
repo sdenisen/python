@@ -1,4 +1,4 @@
-from WSController import motor
+from HomeExplorerEngine.WSController.motor import Motor
 
 __author__ = 'sdeni'
 
@@ -8,14 +8,14 @@ from WSController.common_consts import *
 class EngineController(object):
 
     def __init__(self):
-        self.motor_ahead_left = motor(PIN_AHEAD_LEFT_FORWARD, PIN_AHEAD_LEFT_BACKWARD, PIN_AHEAD_LEFT_PWM, "ahead left")
-        self.motor_ahead_right = motor(PIN_AHEAD_RIGHT_FORWARD, PIN_AHEAD_RIGHT_BACKWARD, PIN_AHEAD_RIGHT_PWM, "ahead right")
+        self.motor_ahead_left = Motor(PIN_AHEAD_LEFT_FORWARD, PIN_AHEAD_LEFT_BACKWARD, PIN_AHEAD_LEFT_PWM, "ahead left")
+        self.motor_ahead_right = Motor(PIN_AHEAD_RIGHT_FORWARD, PIN_AHEAD_RIGHT_BACKWARD, PIN_AHEAD_RIGHT_PWM, "ahead right")
 
-        self.motor_behind_right = motor(PIN_BEHIND_RIGHT_FORWARD, PIN_BEHIND_RIGHT_BACKWARD, PIN_BEHIND_RIGHT_PWM, "behind right")
+        self.motor_behind_right = Motor(PIN_BEHIND_RIGHT_FORWARD, PIN_BEHIND_RIGHT_BACKWARD, PIN_BEHIND_RIGHT_PWM, "behind right")
         self.motor_ahead_left.start()
         self.motor_behind_right.start()
 
-        self.motor_behind_left = motor(PIN_BEHIND_LEFT_FORWARD, PIN_BEHIND_LEFT_BACKWARD, PIN_BEHIND_LEFT_PWM, "behind left")
+        self.motor_behind_left = Motor(PIN_BEHIND_LEFT_FORWARD, PIN_BEHIND_LEFT_BACKWARD, PIN_BEHIND_LEFT_PWM, "behind left")
         self.motor_ahead_right.start()
         self.motor_behind_left.start()
 

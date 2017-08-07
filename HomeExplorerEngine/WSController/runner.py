@@ -1,20 +1,20 @@
 import time
-from WSController import engine_controller
+from HomeExplorerEngine.WSController.engine_controller import EngineController
 
 __author__ = 'sdeni'
 
 
-ec = engine_controller()
+ec = EngineController()
 
 ec.goForward()
 time.sleep(5)
-ec.stop()
+ec.stopAction()
 time.sleep(5)
 ec.goBackward()
 time.sleep(5)
 
 
-ec.stop()
+ec.stopAction()
 time.sleep(1)
 print ("stop - all - motors")
 ec.cleanup()
