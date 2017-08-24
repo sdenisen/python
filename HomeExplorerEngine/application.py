@@ -1,5 +1,8 @@
 __author__ = 'sdeni'
+
+import time
 from tkinter import *
+from WSLib.web_client import EngineActions
 
 class Application(Frame):
 
@@ -29,6 +32,7 @@ class Application(Frame):
         self.parent.bind("<Key>", self.eventHandler)
         self.parent.focus()
 
+        self.web_ea = EngineActions("http://192.168.1.121:5000")
 
     def bindControls(self):
         self.btn_left.bind("<Button-1>", self.eventHandler)
@@ -54,14 +58,28 @@ class Application(Frame):
         print (keycode)
         if keycode == 38 or button_name==self.BTN_NAME_UP: # Up
             print ("Up")
+            self.web_ea.stop()
+            time.sleep(1)
+            self.web_ea.forward()
+
         elif keycode == 37 or button_name==self.BTN_NAME_LEFT: # Left
             print ("Left")
+            self.web_ea.stop()
+            time.sleep(1)
+            self.web_ea.left()
         elif keycode == 40 or button_name==self.BTN_NAME_DOWN: # Down
             print ("Down")
+            self.web_ea.stop()
+            time.sleep(1)
+            self.web_ea.backward()
         elif keycode == 39 or button_name==self.BTN_NAME_RIGHT: # Right
             print ("Right")
+            self.web_ea.stop()
+            time.sleep(1)
+            self.web_ea.right()
         elif keycode == 13 or button_name==self.BTN_NAME_STOP: # Stop
             print ("Stop")
+            self.web_ea.stop()
 
 
 root = Tk()

@@ -1,20 +1,5 @@
-import time
-from HomeExplorerEngine.WSController.engine_controller import EngineController
-
 __author__ = 'sdeni'
 
+from WSController.web_services import app
 
-ec = EngineController()
-
-ec.goForward()
-time.sleep(5)
-ec.stopAction()
-time.sleep(5)
-ec.goBackward()
-time.sleep(5)
-
-
-ec.stopAction()
-time.sleep(1)
-print ("stop - all - motors")
-ec.cleanup()
+app.run(debug=True, host='0.0.0.0')

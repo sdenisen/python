@@ -10,8 +10,8 @@ class ExplorerEngineError(Exception):
         return repr('%s: %s %s' % (self.error_code, self.msg, self.responce))
 
 class EngineActions():
-    def __init__(self):
-        self.controller_url = "http://127.0.0.1:5000/"
+    def __init__(self, ctrl_url = "http://127.0.0.1:5000/"):
+        self.controller_url = ctrl_url
         self.client = requests.Session()
         self.method = 'GET'
 
@@ -29,15 +29,22 @@ class EngineActions():
             raise ExplorerEngineError(response.content, code, response)
 
         # parse response:
-
     def forward(self):
-        path = "action/v1.0/forward"
+        path = "/action/v1.0/go/forward"
         self.call(path=path)
 
     def backward(self):
-        path = "action/v1.0/backward"
+        path = "/action/v1.0/go/backward"
+        self.call(path=path)
+
+    def left(self):
+        path = "/action/v1.0/go/left"
+        self.call(path=path)
+
+    def right(self):
+        path = "/action/v1.0/go/right"
         self.call(path=path)
 
     def stop(self):
-        path = "action/v1.0/stop"
+        path = "/action/v1.0/stop"
         self.call(path=path)
