@@ -12,11 +12,18 @@ def checkCorrectInput(cell_index):
 
 
 def drawToOutput(array_field):
+    """
+    Print tick tack toe field.
+    :param array_field: array of field.
+    :return:  None
+    """
+    _help = "| "
     for i in range(9):
-        if i != 0 and i % 3 == 0:
-            print(" - 0, 1, 2 ")
+        _help = _help + f"{i}, "
         print(array_field[i], end=" ")
-    print(" - 0, 1, 2 ")
+        if i % 3 == 2:
+            print(_help)
+            _help = "| "
 
 
 def cell_input(player_name):
