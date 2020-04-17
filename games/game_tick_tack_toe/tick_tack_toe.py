@@ -3,12 +3,23 @@ def isDefinedWinner(array):
     return False
 
 
-def checkCorrectInput(cell_index):
-    # TODO: check that it's a digit,
-    # TODO: check correct input,
-    # TODO: check that array with cell index is empty.
-    cell_index = int(cell_index)
-    return 0 < cell_index or cell_index <= 9
+def checkCorrectInput(cell_input_index, cell_array):
+    """
+    Check that cell_index is satisfied of criteria: digit / cell of array is not filled / and index between 0 and 9.
+    :param cell_input_index: index cell that have to be verified (typed from player).
+    :param array_field:
+    :return: True/False
+    """
+    if not cell_input_index.isdigit():
+        return False
+
+    cell_input_index = int(cell_input_index)
+    if cell_input_index < 0 or cell_input_index >= 9:
+        return False
+
+    if cell_array[cell_input_index] != "-":
+        return False
+    return True
 
 
 def drawToOutput(array_field):
@@ -26,15 +37,20 @@ def drawToOutput(array_field):
             _help = "| "
 
 
-def cell_input(player_name):
-    cell_id = input(f"{player_name}, please type number of cell: ")
-    while not checkCorrectInput(cell_id):
-        print("incorrect input, please try use cell id number from 1 to 9")
+def cell_input(player_name, cell_array):
+    """
+    receive input from player and check it.
+    :param player_name: player name.
+    :param cell_array:
+    :return: correct value that player typed.
+    """
+    while True:
         cell_id = input(f"{player_name}, please type number of cell: ")
+        if checkCorrectInput(cell_id, cell_array):
+            break
+        print("incorrect input, please try again")
 
-        if not checkCorrectInput(cell_id):
-            print("incorrect input, please try use cell id number from 1 to 9")
-            continue
+    return int(cell_id)
 
 
 if __name__ == "__main__":
@@ -44,21 +60,17 @@ if __name__ == "__main__":
     array_field = ["-" for i in range(9)]
     drawToOutput(array_field)
     while not is_defined_winner:
-        cell_id = input("player1, please type number of cell: ")
-        if not checkCorrectInput(cell_id):
-            print("incorrect input, please try use cell id number from 1 to 9")
-            continue
-        cell_id = int(cell_id)
-        array_field[cell_id] = "X"
+        cell_index = cell_input("Player-1", array_field)
+        array_field[cell_index] = "X"
+
         drawToOutput(array_field)
         if isDefinedWinner(array_field):
             print("You are winner!")
             break
 
-        cell_id = input("player2, please type number of cell: ")
-        if not checkCorrectInput(cell_id):
-            print("Incorrect input, please use number between 1 and 9")
-            continue
-        cell_id = int(cell_id)
-        array_field[cell_id] = "O"
+        cell_index = cell_input("Player-2", array_field)
+        array_field[cell_index] = "O"
         drawToOutput(array_field)
+        if isDefinedWinner(array_field):
+            print("You are winner!")
+            break
