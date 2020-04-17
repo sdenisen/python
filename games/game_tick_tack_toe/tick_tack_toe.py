@@ -56,9 +56,16 @@ def cell_input(player_name, cells_array):
     return int(cell_id)
 
 
-def playerStep(player_name, cells_array):
+def playerStep(player_name, cells_array, cell_name):
+    """
+
+    :param player_name:
+    :param cells_array:
+    :param cell_name:
+    :return:
+    """
     _index = cell_input(player_name, cells_array)
-    playing_field[_index] = "X"
+    cells_array[_index] = cell_name
     draw(cells_array)
     if isDefinedWinner(cells_array):
         print(f"{player_name}, you are winner!")
@@ -72,10 +79,10 @@ if __name__ == "__main__":
     playing_field = [EMPTY_CELL for i in range(9)]
     draw(playing_field)
     while True:
-        is_win = playerStep("Player-1", playing_field)
+        is_win = playerStep("Player-1", playing_field, "X")
         if is_win:
             break
 
-        is_win = playerStep("Player-2", playing_field)
+        is_win = playerStep("Player-2", playing_field, "O")
         if is_win:
             break
