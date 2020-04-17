@@ -1,4 +1,6 @@
 EMPTY_CELL = "-"
+X_CELL = "X"
+O_CELL = "O"
 
 
 def is_defined_winner(array):
@@ -70,17 +72,17 @@ def player_step(player_name, cells_array, cell_name):
 
 
 if __name__ == "__main__":
-    print("You start new game, please input number from [1--9]")
-    print("Player-1 - 'X'; Player-2 - 'O';")
+    print(f"please input number from [1--9]; Player-1 - '{X_CELL}'; Player-2 - '{O_CELL}';")
+    print("Player-1 - you start game:")
     playing_field = [EMPTY_CELL for i in range(9)]
     draw(playing_field)
     while True:
-        player_step("Player-1", playing_field, "X")
+        player_step("Player-1", playing_field, X_CELL)
         if is_defined_winner(playing_field):
             print(f"Player-1, you are winner!")
             break
 
-        player_step("Player-2", playing_field, "O")
+        player_step("Player-2", playing_field, O_CELL)
         if is_defined_winner(playing_field):
             print(f"Player-2, you are winner!")
             break
