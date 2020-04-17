@@ -1,16 +1,16 @@
 EMPTY_CELL = "-"
 
 
-def isDefinedWinner(array):
+def is_defined_winner(array):
     # TODO: need to check for winner.
     return False
 
 
-def checkCorrectInput(cell_input_index, cells_array):
+def check_correct_input(cell_input_index, cells_array):
     """
     Check that cell_index is satisfied of criteria: digit / cell of array is not filled / and index between 0 and 9.
     :param cell_input_index: index cell that have to be verified (typed from player).
-    :param array_field:
+    :param cells_array:
     :return: True/False
     """
     if not cell_input_index.isdigit():
@@ -49,14 +49,14 @@ def cell_input(player_name, cells_array):
     """
     while True:
         cell_id = input(f"{player_name}, please type number of cell: ")
-        if checkCorrectInput(cell_id, cells_array):
+        if check_correct_input(cell_id, cells_array):
             break
         print("incorrect input, please try again")
 
     return int(cell_id)
 
 
-def playerStep(player_name, cells_array, cell_name):
+def player_step(player_name, cells_array, cell_name):
     """
 
     :param player_name:
@@ -67,10 +67,6 @@ def playerStep(player_name, cells_array, cell_name):
     _index = cell_input(player_name, cells_array)
     cells_array[_index] = cell_name
     draw(cells_array)
-    if isDefinedWinner(cells_array):
-        print(f"{player_name}, you are winner!")
-        return True
-    return False
 
 
 if __name__ == "__main__":
@@ -79,10 +75,12 @@ if __name__ == "__main__":
     playing_field = [EMPTY_CELL for i in range(9)]
     draw(playing_field)
     while True:
-        is_win = playerStep("Player-1", playing_field, "X")
-        if is_win:
+        player_step("Player-1", playing_field, "X")
+        if is_defined_winner(playing_field):
+            print(f"Player-1, you are winner!")
             break
 
-        is_win = playerStep("Player-2", playing_field, "O")
-        if is_win:
+        player_step("Player-2", playing_field, "O")
+        if is_defined_winner(playing_field):
+            print(f"Player-2, you are winner!")
             break
