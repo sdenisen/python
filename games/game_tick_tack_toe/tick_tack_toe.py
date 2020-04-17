@@ -1,9 +1,12 @@
+EMPTY_CELL = "-"
+
+
 def isDefinedWinner(array):
     # TODO: need to check for winner.
     return False
 
 
-def checkCorrectInput(cell_input_index, cell_array):
+def checkCorrectInput(cell_input_index, cells_array):
     """
     Check that cell_index is satisfied of criteria: digit / cell of array is not filled / and index between 0 and 9.
     :param cell_input_index: index cell that have to be verified (typed from player).
@@ -17,12 +20,12 @@ def checkCorrectInput(cell_input_index, cell_array):
     if cell_input_index < 0 or cell_input_index >= 9:
         return False
 
-    if cell_array[cell_input_index] != "-":
+    if cells_array[cell_input_index] != EMPTY_CELL:
         return False
     return True
 
 
-def drawToOutput(array_field):
+def draw(array_field):
     """
     Print tick tack toe field.
     :param array_field: array of field.
@@ -37,40 +40,42 @@ def drawToOutput(array_field):
             _help = "| "
 
 
-def cell_input(player_name, cell_array):
+def cell_input(player_name, cells_array):
     """
-    receive input from player and check it.
+    Receive input from player and check it.
     :param player_name: player name.
-    :param cell_array:
+    :param cells_array:
     :return: correct value that player typed.
     """
     while True:
         cell_id = input(f"{player_name}, please type number of cell: ")
-        if checkCorrectInput(cell_id, cell_array):
+        if checkCorrectInput(cell_id, cells_array):
             break
         print("incorrect input, please try again")
 
     return int(cell_id)
 
 
-if __name__ == "__main__":
-    print("you start new game, please input numner from [1--9]")
-    print("player1 - X; player2 - O;")
-    is_defined_winner = False
-    array_field = ["-" for i in range(9)]
-    drawToOutput(array_field)
-    while not is_defined_winner:
-        cell_index = cell_input("Player-1", array_field)
-        array_field[cell_index] = "X"
+def playerStep(player_name, cells_array):
+    _index = cell_input(player_name, cells_array)
+    playing_field[_index] = "X"
+    draw(cells_array)
+    if isDefinedWinner(cells_array):
+        print(f"{player_name}, you are winner!")
+        return True
+    return False
 
-        drawToOutput(array_field)
-        if isDefinedWinner(array_field):
-            print("You are winner!")
+
+if __name__ == "__main__":
+    print("You start new game, please input number from [1--9]")
+    print("Player-1 - 'X'; Player-2 - 'O';")
+    playing_field = [EMPTY_CELL for i in range(9)]
+    draw(playing_field)
+    while True:
+        is_win = playerStep("Player-1", playing_field)
+        if is_win:
             break
 
-        cell_index = cell_input("Player-2", array_field)
-        array_field[cell_index] = "O"
-        drawToOutput(array_field)
-        if isDefinedWinner(array_field):
-            print("You are winner!")
+        is_win = playerStep("Player-2", playing_field)
+        if is_win:
             break
