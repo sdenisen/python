@@ -33,13 +33,13 @@ def draw(array_field):
     :param array_field: array of field.
     :return:  None
     """
-    _help = "| "
+    _sep = "| "
     for i in range(9):
-        _help = _help + f"{i}, "
         print(array_field[i], end=" ")
+        _sep = _sep + f"{i}, "
         if i % 3 == 2:
-            print(_help)
-            _help = "| "
+            print(_sep)
+            _sep = "| "
 
 
 def cell_input(player_name, cells_array):
