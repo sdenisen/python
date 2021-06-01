@@ -1,14 +1,5 @@
-import time
 from sys import stdout
 from collections import defaultdict
-
-
-def initData():
-    data = input().split(" ")
-    user_limit = int(data[0])
-    service_limit = int(data[1])
-    duration = int(data[2])
-    return user_limit, service_limit, duration
 
 
 class RequestCollector:
@@ -21,46 +12,44 @@ class RequestCollector:
         self.request_times = list()
 
     def check_timeouts(self, user_id, new_request):
-        r = []
-        for request_time in self.dict_users[user_id]:
-            if request_time < new_request - self.duration:
-                continue
-            r.append(request_time)
-        return r
+        self.dict_users[user_id] = list(
+            filter(lambda r_time: r_time >= new_request - self.duration, self.dict_users[user_id])
+        )
 
     def check_request_times(self, new_request):
-        r = list()
-        for time in self.request_times:
-            if time < new_request - self.duration:
-                continue
-            r.append(time)
-        return r
+        self.request_times = list(
+            filter(lambda r_time: r_time >= new_request - self.duration, self.request_times)
+        )
 
     def get_request_status(self, str_request_data):
         request = str_request_data.split(" ")
         request_time = int(request[0])
         user_id = request[1]
 
-        r = self.check_timeouts(user_id, request_time)
-        if len(r) > self.user_limit - 1:
+        def time_condition(r_time): return r_time >= request_time - self.duration
+
+        self.dict_users[user_id] = list(filter(time_condition, self.dict_users[user_id]))
+
+        if len(self.dict_users[user_id]) >= self.user_limit:
             return 429
 
-        r_service_requests = self.check_request_times(new_request=request_time)
-        if len(r_service_requests) > self.service_limit - 1:
+        self.request_times = list(filter(time_condition, self.request_times))
+        if len(self.request_times) >= self.service_limit:
             return 503
 
         # add user to dict:
-        r.append(request_time)
-        r_service_requests.append(request_time)
+        self.dict_users[user_id].append(request_time)
 
         # add time to request times list:
-        self.dict_users[user_id] = r
-        self.request_times = r_service_requests
+        self.request_times.append(request_time)
         return 200
 
 
 def main():
-    user_limit, service_limit, duration = initData()
+    data = input().split(" ")
+    user_limit = int(data[0])
+    service_limit = int(data[1])
+    duration = int(data[2])
 
     rc = RequestCollector(user_limit, service_limit, duration)
 
@@ -75,5 +64,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

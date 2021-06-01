@@ -1,11 +1,12 @@
-import time
+import random
 import unittest
 
 import task5.task5_resolve
 
 
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
+
+    def test_check_test_data_from_task_description(self):
         rc = task5.task5_resolve.RequestCollector(user_limit=2, service_limit=5, duration=5)
 
         verify_data = [(1, 100, 200),  # 1
@@ -21,12 +22,24 @@ class MyTestCase(unittest.TestCase):
                        (7, 200, 200)]  # 11
         i = 1
         for request_time, user_id, responce in verify_data:
+            print(i)
             r = rc.get_request_status(f"{request_time} {user_id}")
-            print(f"user_id: {user_id} request_time: {request_time} -> response: {r}; {i} -> {rc.dict_users} ===> {rc.request_times}")
-            i += 1
             self.assertEqual(r, responce)
-            # print(rc.dict_users)
+            i += 1
 
+    def test2(self):
+        # generate big test data:
+        limit = 50000
+        user_ids = [random.randint(1, 100) for _ in range(limit)]
+        request_times = [random.randint(1, 50000) for _ in range(limit)]
+        sorted(request_times)
+        rc = task5.task5_resolve.RequestCollector(user_limit=2, service_limit=5, duration=5)
+        res = list()
+        for request_time, user_id in zip(request_times, user_ids):
+            r = rc.get_request_status(f"{request_time} {user_id}")
+            res.append(r)
+
+        print(len(res))
 
 
 
