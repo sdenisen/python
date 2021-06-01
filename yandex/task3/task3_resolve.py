@@ -1,7 +1,7 @@
 import json
 
 
-def get_unique_offers2(fid_list):
+def get_unique_offers(fid_list):
     result = []
     unique_offers = set()
     for fid in fid_list:
@@ -21,7 +21,7 @@ def main():
         offers = input()
         fid_list.append(json.loads(offers))
 
-    sorted_unique_offers = get_unique_offers2(fid_list)
+    sorted_unique_offers = get_unique_offers(fid_list)
     print(json.dumps(sorted_unique_offers))
 
 

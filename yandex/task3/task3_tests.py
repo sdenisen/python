@@ -4,7 +4,7 @@ import string
 import unittest
 from timeit import Timer
 
-from task3.task3_resolve import get_unique_offers2
+from task3.task3_resolve import get_unique_offers
 
 
 class MyTestCase(unittest.TestCase):
@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
                                       ]}
 
         input_data = [fid_1, fid_2]
-        sorted_offers = get_unique_offers2(input_data)
+        sorted_offers = get_unique_offers(input_data)
         self.assertDictEqual(expected_offers, sorted_offers)
 
     def test_big_data(self):
@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
                 fid.append(fid_template)
             input_data.append({"offers": fid})
         print("start time test:")
-        t = Timer(functools.partial(get_unique_offers2, input_data), globals=globals())
+        t = Timer(functools.partial(get_unique_offers, input_data), globals=globals())
 
         print(t.timeit(1)/1)
 
