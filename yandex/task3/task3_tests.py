@@ -1,11 +1,9 @@
 import functools
 import random
 import string
-import time
 import unittest
 from timeit import Timer
 
-from task3.task3_resolve import get_unique_offers, to_threads
 from task3.task3_resolve import get_unique_offers2
 
 
@@ -21,7 +19,7 @@ class MyTestCase(unittest.TestCase):
                                       ]}
 
         input_data = [fid_1, fid_2]
-        sorted_offers = get_unique_offers(input_data)
+        sorted_offers = get_unique_offers2(input_data)
         self.assertDictEqual(expected_offers, sorted_offers)
 
     def test_big_data(self):
@@ -40,26 +38,6 @@ class MyTestCase(unittest.TestCase):
             input_data.append({"offers": fid})
         print("start time test:")
         t = Timer(functools.partial(get_unique_offers2, input_data), globals=globals())
-
-        print(t.timeit(1)/1)
-
-    def test_big_data_thread(self):
-        # fid_template = {"offer_id": "str", "market_sku": 555, "price": 444}
-        n = 200
-        count_fid = 200
-        input_data = []
-        for i in range(n):
-            fid = []
-            for j in range(count_fid):
-                offer_id = ''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=9))
-                market_sku = random.randint(1, 30)
-                price = random.randint(1, 30)
-                fid_template = {"offer_id": offer_id, "market_sku": market_sku, "price": price}
-                fid.append(fid_template)
-            input_data.append({"offers": fid})
-
-        print("start time test:")
-        t = Timer(functools.partial(to_threads, input_data), globals=globals())
 
         print(t.timeit(1)/1)
 
