@@ -1,5 +1,5 @@
 from sys import stdout
-from collections import defaultdict, deque
+from collections import defaultdict
 
 
 class RequestCollector:
@@ -8,39 +8,35 @@ class RequestCollector:
         self.user_limit = user_limit
         self.service_limit = service_limit
         self.duration = duration
-        self.dict_users = defaultdict(list)  # key = user_id, value = [request_time1, request_time2, ...]
-        self.request_times = list()
+        self.user_requests_dict = defaultdict(list)  # {<user_id_1>: [request_time1, request_time2, ...], ...}
+        self.service_requests_list = list()
 
-    def get_request_status(self, str_request_data):
-        request = str_request_data.split(" ")
-        request_time = int(request[0])
-        user_id = int(request[1])
-        expected = request_time - self.duration
+    def get_request_status_for(self, user_id, request_time):
 
-        def time_condition(r_time): return r_time >= expected
+        def is_meet_time_condition(r_time):
+            return r_time >= (request_time - self.duration)
 
-        for r_time in self.dict_users[user_id]:
-            if not time_condition(r_time):
-                self.dict_users[user_id].pop(0)
-                continue
-            break
-        if len(self.dict_users[user_id]) >= self.user_limit:
+        #  check user limit:
+        for r_time in self.user_requests_dict[user_id]:
+            if is_meet_time_condition(r_time):
+                break
+            self.user_requests_dict[user_id].pop(0)
+
+        if len(self.user_requests_dict[user_id]) >= self.user_limit:
             return 429
 
-        for r_time in self.request_times:
-            if not time_condition(r_time):
-                self.request_times.pop(0)
-                continue
-            break
+        #  check service limit:
+        for r_time in self.service_requests_list:
+            if is_meet_time_condition(r_time):
+                break
+            self.service_requests_list.pop(0)
 
-        if len(self.request_times) >= self.service_limit:
+        if len(self.service_requests_list) >= self.service_limit:
             return 503
 
-        # add user to dict:
-        self.dict_users[user_id].append(request_time)
-
-        # add time to request times list:
-        self.request_times.append(request_time)
+        #  update with new request:
+        self.user_requests_dict[user_id].append(request_time)
+        self.service_requests_list.append(request_time)
         return 200
 
 
@@ -56,7 +52,12 @@ def main():
         new_request = input()
         if new_request == "-1":
             break
-        status = rc.get_request_status(str_request_data=new_request)
+
+        request = new_request.split(" ")
+        request_time = int(request[0])
+        user_id = int(request[1])
+
+        status = rc.get_request_status_for(user_id=user_id, request_time=request_time)
         print(status)
         stdout.flush()
 

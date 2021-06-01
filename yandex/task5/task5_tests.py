@@ -20,12 +20,10 @@ class MyTestCase(unittest.TestCase):
                        (5, 200, 503),  # 9
                        (6, 100, 429),  # 10
                        (7, 200, 200)]  # 11
-        i = 1
+
         for request_time, user_id, responce in verify_data:
-            print(i)
-            r = rc.get_request_status(f"{request_time} {user_id}")
+            r = rc.get_request_status_for(user_id=user_id, request_time=request_time)
             self.assertEqual(r, responce)
-            i += 1
 
     def test2(self):
         # generate big test data:
@@ -37,11 +35,10 @@ class MyTestCase(unittest.TestCase):
         rc = task5.task5_resolve.RequestCollector(user_limit=50000, service_limit=50000, duration=500)
         res = list()
         for request_time, user_id in zip(request_times, user_ids):
-            r = rc.get_request_status(f"{request_time} {user_id}")
+            r = rc.get_request_status_for(user_id=user_id, request_time=request_time)
             res.append(r)
 
         print(len(res))
-
 
 
 if __name__ == '__main__':
