@@ -29,11 +29,12 @@ class MyTestCase(unittest.TestCase):
 
     def test2(self):
         # generate big test data:
-        limit = 50000
+        limit = 150000
         user_ids = [random.randint(1, 100) for _ in range(limit)]
         request_times = [random.randint(1, 50000) for _ in range(limit)]
         sorted(request_times)
-        rc = task5.task5_resolve.RequestCollector(user_limit=2, service_limit=5, duration=5)
+        print("start")
+        rc = task5.task5_resolve.RequestCollector(user_limit=50000, service_limit=50000, duration=500)
         res = list()
         for request_time, user_id in zip(request_times, user_ids):
             r = rc.get_request_status(f"{request_time} {user_id}")

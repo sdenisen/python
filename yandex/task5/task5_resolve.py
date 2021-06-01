@@ -1,5 +1,5 @@
 from sys import stdout
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 class RequestCollector:
@@ -11,29 +11,28 @@ class RequestCollector:
         self.dict_users = defaultdict(list)  # key = user_id, value = [request_time1, request_time2, ...]
         self.request_times = list()
 
-    def check_timeouts(self, user_id, new_request):
-        self.dict_users[user_id] = list(
-            filter(lambda r_time: r_time >= new_request - self.duration, self.dict_users[user_id])
-        )
-
-    def check_request_times(self, new_request):
-        self.request_times = list(
-            filter(lambda r_time: r_time >= new_request - self.duration, self.request_times)
-        )
-
     def get_request_status(self, str_request_data):
         request = str_request_data.split(" ")
         request_time = int(request[0])
-        user_id = request[1]
+        user_id = int(request[1])
+        expected = request_time - self.duration
 
-        def time_condition(r_time): return r_time >= request_time - self.duration
+        def time_condition(r_time): return r_time >= expected
 
-        self.dict_users[user_id] = list(filter(time_condition, self.dict_users[user_id]))
-
+        for r_time in self.dict_users[user_id]:
+            if not time_condition(r_time):
+                self.dict_users[user_id].pop(0)
+                continue
+            break
         if len(self.dict_users[user_id]) >= self.user_limit:
             return 429
 
-        self.request_times = list(filter(time_condition, self.request_times))
+        for r_time in self.request_times:
+            if not time_condition(r_time):
+                self.request_times.pop(0)
+                continue
+            break
+
         if len(self.request_times) >= self.service_limit:
             return 503
 
