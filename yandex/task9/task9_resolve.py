@@ -10,32 +10,36 @@
 """
 
 
-def compress(l):
-    if not l:
-        return ""
-    l = sorted(l)
+def make_interval(start, end, is_not_end):
     result_intervals = ""
-
-    index = 0
-    while True:
-        start_interval = l[index]
-        end_interval = start_interval
-        for j in range(index + 1, len(l) - 1):
-            if end_interval + 1 == l[j]:
-                end_interval = l[j]
-            index = j
-            break
-
-        if end_interval == start_interval:
-            result_intervals += f"{start_interval}"
-            index += 1
-        else:
-            result_intervals += f"{start_interval}-{end_interval}"
-
-        if index != len(l):
-            result_intervals += ","
-        else:
-            break
-
+    if not end:
+        result_intervals += f"{start}"
+    else:
+        result_intervals += f"{start}-{end}"
+    if is_not_end:
+        result_intervals += ","
     return result_intervals
 
+
+def compress(input_array):
+    if not input_array:
+        return ""
+    sorted_array = sorted(input_array)
+    result_intervals = ""
+
+    while sorted_array:
+        start = sorted_array.pop(0)
+        end = None
+        index = 1
+        while sorted_array:
+            expected_end = sorted_array[0]
+            if (expected_end - index) == start:
+                index += 1
+                end = expected_end
+                sorted_array.pop(0)
+                continue
+            break
+
+        result_intervals += make_interval(start, end, len(sorted_array))
+
+    return result_intervals
