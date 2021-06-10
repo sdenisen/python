@@ -22,11 +22,9 @@ def make_interval(start, end, is_not_end):
 
 
 def compress(input_array):
-    if not input_array:
-        return ""
-    sorted_array = sorted(input_array)
-    result_intervals = ""
 
+    result_intervals = ""
+    sorted_array = sorted(input_array)
     while sorted_array:
         start = sorted_array.pop(0)
         end = None
