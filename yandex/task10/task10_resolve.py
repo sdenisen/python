@@ -7,42 +7,32 @@ def revertДана строка (возможно, пустая), состоящ
 "  QUICK FOX   JUMPS "->"  KCIUQ XOF   SPMUJ "
 "  "->"  "
 ""->"
-"""
 
+"""
+import re
 
 def revers(word):
     r = []
-    index = len(word)
-    while index > 0:
+    index = len(word)-1
+    while index >= 0:
         r.append(word[index])
+        index -= 1
+
     return "".join(r)
 
 
 def revers_words(s):
+
+    if not s:
+        return ""
+
+    r = re.search(r"[A-Z]| ", s)
+    if not r:
+        raise Exception
+
     a = s.split(" ")  # "abc  cde" => [['abc']['']['cde']] ==> revers() ==> join(" ")
     result = []
-    for word in a[:-1]:
+    for word in a:
         result.append(revers(word))
-
-    return result
-
     return " ".join(result)
-
-
-def revers2_word(s):
-    i = 0
-    result = ""
-    word = ""
-    for i in len(s):
-        if i == " ":
-            result += revers(word)
-            result += " "
-            word = ""
-            continue
-
-        word += s[i]
-    else:
-        result += revers(word)
-
-
 
