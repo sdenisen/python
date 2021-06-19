@@ -8,28 +8,34 @@ def converToFloat(line):
     return result
 
 
-def getMinimumDeltaOfSignal(metabolites, adducts, signal):
-    min_delta = None
-    result = ()
+def getIndexesOfDiffs(metabolites, adducts):
+    r = {}
     for m_dx, metabl in enumerate(metabolites):
         for a_dx, adduct in enumerate(adducts):
             sum_m_a = round(metabl + adduct, 6)
             if sum_m_a < 0:
                 continue
+            r[(m_dx+1, a_dx+1)] = sum_m_a
+    return r
 
-            if min_delta is None or abs(signal - sum_m_a) < min_delta:
-                result = (m_dx + 1, a_dx + 1)
-                min_delta = abs(signal - sum_m_a)
-                # print(min_delta)
 
+def getMinimumDeltaOfSignal(keylist, signal):
+    min_delta = None
+    result = 0
+    for key in keylist:
+        abs_signals = abs(signal - key)
+        if min_delta is None or abs_signals < min_delta:
+            min_delta = abs_signals
+            result = key
+        else:
+            break
     return result
 
 
 def calculate():
-    s = open("output-3.txt", "w")
     with open("3.txt", "r") as f:
         count_test_cases = int(f.readline().strip())
-        result = []
+        result_keys = []
         for i in range(count_test_cases):
             counters_m_k_n = f.readline().strip().split(" ")
 
@@ -40,18 +46,26 @@ def calculate():
             metabolites = converToFloat(f.readline().strip())
             adducts = converToFloat(f.readline().strip())
             signals = converToFloat(f.readline().strip())
+
+            indexes_diffs = getIndexesOfDiffs(metabolites, adducts)
+            res = {val: key for key, val in indexes_diffs.items()}  # here we remove duplicates;
+
             if count_masses_of_metabolites != len(metabolites) or count_masses_of_adducts != len(
                     adducts) or count_masses_of_signals != len(signals):
                 raise Exception(" some error")
 
+            print("start calculate")
+            key_list = sorted(res.keys())
             for signal in signals:
-                result.append(getMinimumDeltaOfSignal(metabolites, adducts, signal))
+                result_keys.append( getMinimumDeltaOfSignal(key_list, signal) )
 
-        for r in result:
-            m_index = str(r[0])
-            a_idnex = str(r[1])
-            s.write(" ".join([m_index, a_idnex]) + "\n")
-    s.close()
+            s = open(f"output-3-optimize.6.{i}.txt", "w")
+            for key in result_keys:
+                r = res[key]
+                m_index = str(r[0])
+                a_idnex = str(r[1])
+                s.write(" ".join([m_index, a_idnex]) + "\n")
+            s.close()
 
 
 def main():
