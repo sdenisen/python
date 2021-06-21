@@ -15,7 +15,7 @@ def getIndexesOfDiffs(metabolites, adducts):
             sum_m_a = round(metabl + adduct, 6)
             if sum_m_a < 0:
                 continue
-            r[(m_dx+1, a_dx+1)] = sum_m_a
+            r[(m_dx + 1, a_dx + 1)] = sum_m_a
     return r
 
 
@@ -57,7 +57,7 @@ def calculate():
             print("start calculate")
             key_list = sorted(res.keys())
             for signal in signals:
-                result_keys.append( getMinimumDeltaOfSignal(key_list, signal) )
+                result_keys.append(getMinimumDeltaOfSignal(key_list, signal))
 
             s = open(f"output-3-optimize.6.{i}.txt", "w")
             for key in result_keys:

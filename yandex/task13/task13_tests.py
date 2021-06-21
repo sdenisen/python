@@ -1,5 +1,5 @@
 import unittest
-from task13.task13_resolve import converToFloat, getMinimumDeltaOfSignal
+from task13.task13_resolve import converToFloat, getMinimumDeltaOfSignal, getIndexesOfDiffs
 
 
 class UnitTests(unittest.TestCase):
@@ -18,66 +18,98 @@ class UnitTests(unittest.TestCase):
     def test_delta_1(self):
         metabl = [1.000002, 0.000002]
         adduct = [0.500000, -0.500000]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.500001)
-        expected_values = (1, 2)
-        self.assertEqual(expected_values, res)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.500001)
+        expected_values = (2, 1)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_2(self):
         metabl = [1.000002, 0.000002]
         adduct = [0.500000, -0.500000]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000001)
-        expected_values = (1, 2)
-        self.assertEqual(expected_values, res)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000001)
+        expected_values = (2, 1)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_3(self):
         metabl = [1.000002, 0.000001]
         adduct = [0.500000, -0.500000]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.500001)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.500001)
         expected_values = (2, 1)
-        self.assertEqual(expected_values, res)
+        self.assertEqual(expected_values, res[key])
+
+    def getKeys(self, metabl, adduct):
+        indexes_diffs = getIndexesOfDiffs(metabl, adduct)
+        res = {val: key for key, val in indexes_diffs.items()}  # here we remove duplicates;
+        key_list = sorted(res.keys())
+        return (res, key_list)
 
     def test_delta_4(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000003)
-        expected_values = (1, 1)
-        self.assertEqual(expected_values, res)
+
+        res, key_list = self.getKeys(metabl, adduct)
+        key = getMinimumDeltaOfSignal(key_list, 0.000003)
+        expected_values = (4, 4)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_5(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000010)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000010)
         expected_values = (1, 2)
-        self.assertEqual(expected_values, res)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_6(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000020)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000020)
         expected_values = (5, 2)
-        self.assertEqual(expected_values, res)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_7(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000005)
-        expected_values = (3, 1)
-        self.assertEqual(expected_values, res)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000005)
+        expected_values = (4, 3)
+        self.assertEqual(expected_values, res[key])
 
     def test_delta_8(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000100)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000100)
         expected_values = (5, 2)
-        self.assertEqual(expected_values, res)
+        self.assertEqual(expected_values, res[key])
 
 
     def test_delta_9(self):
         metabl = [0.000001, 0.000002, 0.000003, 0.000004, 0.000005]
         adduct = [0.000002, 0.000010, 0.000001, -0.000001]
-        res = getMinimumDeltaOfSignal(metabl, adduct, 0.000002)
-        expected_values = (1, 3)
-        self.assertEqual(expected_values, res)
+
+        res, key_list = self.getKeys(metabl, adduct)
+
+        key = getMinimumDeltaOfSignal(key_list, 0.000002)
+        expected_values = (3, 4)
+        self.assertEqual(expected_values, res[key])
 
 
 if __name__ == '__main__':
