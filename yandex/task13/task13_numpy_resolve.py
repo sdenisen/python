@@ -27,12 +27,8 @@ def calculate():
                 m_x = min_element[0][0] + 1
                 output_data.append((str(m_x), str(a_y)))
 
-                if not index % 100:
-                    if index % 5000:
-                        print(index, end=" ")
-                    else:
-                        print(index, )
-
+                if not index % 1000:
+                    print(index, end=" " if index % 10000 else None)
                 index += 1
 
     s = open(f"output-3-optimize.numpy.txt", "w")
